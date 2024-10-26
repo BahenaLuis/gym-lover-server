@@ -4,43 +4,67 @@ const router = express.Router();
 const ProductsService = require('./../services/products.service');
 const productsService = new ProductsService();
 
+const { validatorHandler } = require('./../middlewares/validator.handler');
+const { createProductSchema, updateProductSchema, getProductSchema } = require('./../schemas/product.schema');
 
-
-router.get("/", (req, res) =>{
+router.get('/', (req, res) => {
   res.json(productsService.getAll());
 });
 
-router.get("/:id", (req, res) =>{
-  const id = req.params.id;
-  product = productsService.getById(id);
-
-  (product) ? res.json(product) :
-    res.status(404).json({ message: "Not found" });
+router.get('/:id',
+  validatorHandler(getProductSchema, 'params'),
+  (req, res, next) => {
+  try {
+    const id = req.params.id;
+    product = productsService.getById(id);
+    res.json(product);
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.post("/", (req, res) =>{
-  const body = req.body;
-  product = productsService.create(body);
-  res.status(201).json(product);
+router.post('/',
+  validatorHandler(createProductSchema, 'body'),
+  (req, res, next) => {
+  try {
+    const body = req.body;
+    product = productsService.create(body);
+    res.status(201).json(product);
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.patch("/:id", (req, res) =>{
-  const id = req.params.id;
-  const body = req.body;
-  product = productsService.update(id, body);
-  res.json({
-    message: 'updated',
-    data: product
-  });
+router.patch('/:id',
+  validatorHandler(getProductSchema, 'params'),
+  validatorHandler(updateProductSchema, 'body'),
+  (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const body = req.body;
+    product = productsService.update(id, body);
+    res.json({
+      message: 'updated',
+      data: product,
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.delete("/:id", (req, res) =>{
-  const id = req.params.id;
-  productsService.remove(id);
-  res.json({
-    message: 'deleted',
-    id: id
-  });
+router.delete('/:id',
+  validatorHandler(getProductSchema, 'params'),
+  (req, res, next) => {
+  try {
+    const id = req.params.id;
+    productsService.remove(id);
+    res.json({
+      message: 'deleted',
+      id: id,
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;
