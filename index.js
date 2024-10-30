@@ -1,5 +1,6 @@
 const express = require('express');
 const routerApi = require('./routes');
+const cors = require('cors')
 
 const { logErrors, boomErrorHandler, errorHandler } = require('./middlewares/error.handler')
 
@@ -8,6 +9,19 @@ const port = 3000;
 
 //set middleware to allow receive json data
 app.use(express.json());
+
+//allowed origins
+const whitelist = [];
+const options = {
+  origin: (origin, callback) => {
+    if (whitelist.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed"));
+    }
+  }
+}
+app.use(cors(options));
 
 //set the routers to the app
 routerApi(app);
