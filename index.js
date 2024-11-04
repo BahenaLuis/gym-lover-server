@@ -2,7 +2,7 @@ const express = require('express');
 const routerApi = require('./routes');
 const cors = require('cors')
 
-const { logErrors, boomErrorHandler, errorHandler } = require('./middlewares/error.handler')
+const { logErrors, sequelizeErrorHandler, boomErrorHandler, errorHandler } = require('./middlewares/error.handler')
 
 const app = express();
 const port = 3000;
@@ -28,6 +28,7 @@ routerApi(app);
 
 //add middlewares
 app.use(logErrors);
+app.use(sequelizeErrorHandler);
 app.use(boomErrorHandler);
 app.use(errorHandler);
 
