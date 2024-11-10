@@ -1,26 +1,29 @@
 'use strict';
 const { DataTypes, Sequelize } = require('sequelize');
-const { USER_TABLE } = require('./../models/user.model');
+const { ORDER_TABLE } = require('./../models/order.model');
+const { CUSTOMER_TABLE } = require('./../models/customer.model');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface) {
 
-    const userAttributes = {
+    const orderAttributes = {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER
       },
-      email: {
+      customerId: {
+        field: 'customer_id',
         allowNull: false,
-        type: DataTypes.STRING,
-        unique: true
-      },
-      password: {
-        allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.INTEGER,
+        references: {
+          model: CUSTOMER_TABLE,
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL'
       },
       createdAt: {
         allowNull: false,
@@ -30,10 +33,10 @@ module.exports = {
       }
     };
 
-    await queryInterface.createTable(USER_TABLE, userAttributes);
+    await queryInterface.createTable(ORDER_TABLE, orderAttributes);
   },
 
   async down (queryInterface) {
-    await queryInterface.dropTable(USER_TABLE);
+    await queryInterface.dropTable(ORDER_TABLE);
   }
 };
