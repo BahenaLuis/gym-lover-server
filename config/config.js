@@ -7,7 +7,13 @@ const config = {
   dbPassword: process.env.DB_PASSWORD,
   dbHost: process.env.DB_HOST,
   dbName: process.env.DB_NAME,
-  dbPort: process.env.DB_PORT
+  dbPort: process.env.DB_PORT,
+  jwtSecret: process.env.JWT_SECRET,
+
+  smptHost: process.env.SMTP_HOST,
+  smptPort: process.env.SMTP_PORT,
+  smptUser: process.env.SMTP_USER,
+  smtpPass: process.env.SMTP_PASS
 }
 
 module.exports = config;

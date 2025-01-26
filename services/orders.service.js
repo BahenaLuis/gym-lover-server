@@ -21,8 +21,23 @@ class OrdersService {
   }
 
   async getAll() {
-    const Orders = await sequelize.models.Order.findAll();
-    return Orders;
+    const orders = await sequelize.models.Order.findAll();
+    return orders;
+  }
+
+  async getByUser(userId) {
+    const orders = await sequelize.models.Order.findAll({
+      where: {
+        '$customer.user.id$': userId
+      },
+      include: [
+        {
+          association: 'customer',
+          include: 'user'
+        }
+      ]
+    });
+    return orders;
   }
 
   async create(data) {

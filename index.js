@@ -23,6 +23,8 @@ const options = {
 }
 app.use(cors(options));
 
+require('./utils/auth');
+
 //set the routers to the app
 routerApi(app);
 
